@@ -1,6 +1,6 @@
 import aiosqlite
 from datetime import datetime, timedelta
-from typing import Optional, Dict, Any, Tuple
+from typing import Optional, Dict, Any, Tuple, List
 from config import DB_PATH
 
 async def init_db():
@@ -226,3 +226,9 @@ async def get_stats() -> Dict[str, int]:
             "active_chats": active_chats,
             "searching_count": searching_count
         }
+
+async def get_all_user_ids() -> List[int]:
+    async with aiosqlite.connect(DB_PATH) as db:
+        async with db.execute("SELECT user_id FROM users") as c:
+            rows = await c.fetchall()
+            return [r[0] for r in rows]
